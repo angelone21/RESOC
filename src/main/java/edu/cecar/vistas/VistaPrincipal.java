@@ -11,9 +11,11 @@ import edu.cecar.modelos.SolicitudAmistad;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -43,6 +45,13 @@ public class VistaPrincipal extends javax.swing.JFrame {
     public VistaPrincipal(int idUsuario) {
         Perfil perfil = controladorCliente.obtenerPerfil(idUsuario);
         initComponents();
+        byte[] byteArray = perfil.getFotoPerfil(); //need to initialize it
+        ImageIcon imageIcon = new ImageIcon(byteArray);
+        imageIcon.getImage();
+        Image img = imageIcon.getImage();
+        Image newImg = img.getScaledInstance(label_imagen.getWidth(), label_imagen.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon image = new ImageIcon(newImg);
+        label_fotoPerfil.setIcon(image);
         panel_perfil.setVisible(false);
         panel_amigos.setVisible(false);
         panel_publicaciones.setVisible(false);
@@ -53,6 +62,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
         label_apellidos.setText(perfil.getApellidos());
         perfilAutenticado = perfil;
         bt_guardarCambios.setVisible(false);
+        bt_cambiarfoto.setVisible(false);
         String path = System.getProperty("user.dir");
         Image icon = Toolkit.getDefaultToolkit().getImage(path + "\\src\\main\\resources\\icono_gorest.png");
         this.setIconImage(icon);
@@ -78,10 +88,8 @@ public class VistaPrincipal extends javax.swing.JFrame {
         bt_crearPublicacion = new javax.swing.JButton();
         bt_solicitudes = new javax.swing.JButton();
         bt_EnviarSolicitud = new javax.swing.JButton();
+        label_fotoPerfil = new javax.swing.JLabel();
         panel_perfil = new javax.swing.JPanel();
-        label_hola = new javax.swing.JLabel();
-        label_nombresPerfil = new javax.swing.JLabel();
-        label_apellidosPerfil = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         area_descripcion = new javax.swing.JTextArea();
         label_descripcion = new javax.swing.JLabel();
@@ -112,6 +120,8 @@ public class VistaPrincipal extends javax.swing.JFrame {
         bt_privada = new javax.swing.JButton();
         bt_megusta = new javax.swing.JButton();
         bt_nomegusta = new javax.swing.JButton();
+        label_fotoPerfil_perfil = new javax.swing.JLabel();
+        bt_cambiarfoto = new javax.swing.JButton();
         panel_amigos = new javax.swing.JPanel();
         label_amigos = new javax.swing.JLabel();
         label_lista_amigos = new javax.swing.JLabel();
@@ -245,24 +255,13 @@ public class VistaPrincipal extends javax.swing.JFrame {
         });
         panel_botones.add(bt_EnviarSolicitud);
         bt_EnviarSolicitud.setBounds(20, 390, 150, 50);
+        panel_botones.add(label_fotoPerfil);
+        label_fotoPerfil.setBounds(10, 20, 170, 140);
 
         getContentPane().add(panel_botones);
         panel_botones.setBounds(0, 0, 190, 1602);
 
         panel_perfil.setLayout(null);
-
-        label_hola.setFont(new java.awt.Font("Trebuchet MS", 0, 24)); // NOI18N
-        label_hola.setText("Hola!");
-        panel_perfil.add(label_hola);
-        label_hola.setBounds(0, 30, 70, 90);
-
-        label_nombresPerfil.setFont(new java.awt.Font("Trebuchet MS", 0, 24)); // NOI18N
-        panel_perfil.add(label_nombresPerfil);
-        label_nombresPerfil.setBounds(80, 50, 190, 50);
-
-        label_apellidosPerfil.setFont(new java.awt.Font("Trebuchet MS", 0, 24)); // NOI18N
-        panel_perfil.add(label_apellidosPerfil);
-        label_apellidosPerfil.setBounds(260, 50, 230, 50);
 
         area_descripcion.setEditable(false);
         area_descripcion.setColumns(20);
@@ -485,6 +484,17 @@ public class VistaPrincipal extends javax.swing.JFrame {
         });
         panel_perfil.add(bt_nomegusta);
         bt_nomegusta.setBounds(1000, 820, 150, 50);
+        panel_perfil.add(label_fotoPerfil_perfil);
+        label_fotoPerfil_perfil.setBounds(170, 10, 170, 140);
+
+        bt_cambiarfoto.setText("Cambiar");
+        bt_cambiarfoto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_cambiarfotoActionPerformed(evt);
+            }
+        });
+        panel_perfil.add(bt_cambiarfoto);
+        bt_cambiarfoto.setBounds(370, 60, 80, 40);
 
         getContentPane().add(panel_perfil);
         panel_perfil.setBounds(190, 0, 1480, 1080);
@@ -848,6 +858,13 @@ public class VistaPrincipal extends javax.swing.JFrame {
         panel_amigos.setVisible(false);
         bt_guardarCambios.setVisible(false);
         bt_actualizarDatos.setVisible(true);
+        byte[] byteArray = perfilAutenticado.getFotoPerfil(); //need to initialize it
+        ImageIcon imageIcon = new ImageIcon(byteArray);
+        imageIcon.getImage();
+        Image img = imageIcon.getImage();
+        Image newImg = img.getScaledInstance(label_imagen.getWidth(), label_imagen.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon imagen = new ImageIcon(newImg);
+        label_fotoPerfil_perfil.setIcon(imagen);
         ArrayList<Publicacion> publicaciones = new ArrayList<Publicacion>();
         publicaciones = controladorCliente.obtenerPublicaciones(perfilAutenticado.getIdusario());
         DefaultTableModel modeloTablaPublicaciones = new DefaultTableModel() {
@@ -884,8 +901,6 @@ public class VistaPrincipal extends javax.swing.JFrame {
                 Logger.getLogger(VistaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        label_nombresPerfil.setText(perfilAutenticado.getNombres());
-        label_apellidosPerfil.setText(perfilAutenticado.getApellidos());
         txt_idUsuario.setText(perfilAutenticado.getIdusario() + "");
         pass_password.setText(perfilAutenticado.getPassword());
         txt_nombres.setText(perfilAutenticado.getNombres());
@@ -959,6 +974,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
 
     private void bt_actualizarDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_actualizarDatosActionPerformed
         // TODO add your handling code here:
+        bt_cambiarfoto.setVisible(true);
         pass_password.setEditable(true);
         txt_nombres.setEditable(true);
         txt_apellidos.setEditable(true);
@@ -992,6 +1008,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
             } else {
                 perfil_actualizar.setDescripcion(null);
             }
+
             if (controladorCliente.PeticionClientePerfil("actualizarPerfil", perfil_actualizar) == true) {
                 JOptionPane.showMessageDialog(null, "Perfil actualizado correctamente!");
                 perfilAutenticado = perfil_actualizar;
@@ -1006,10 +1023,17 @@ public class VistaPrincipal extends javax.swing.JFrame {
                 bt_guardarCambios.setVisible(false);
                 bt_actualizarDatos.setVisible(true);
                 bt_mostrarPassword.setVisible(false);
-                label_nombresPerfil.setText(perfilAutenticado.getNombres());
-                label_apellidosPerfil.setText(perfilAutenticado.getApellidos());
+                bt_cambiarfoto.setVisible(false);
                 label_nombres.setText(perfilAutenticado.getNombres());
                 label_apellidos.setText(perfilAutenticado.getApellidos());
+                byte[] byteArray = perfilAutenticado.getFotoPerfil(); //need to initialize it
+                ImageIcon imageIcon = new ImageIcon(byteArray);
+                imageIcon.getImage();
+                Image img = imageIcon.getImage();
+                Image newImg = img.getScaledInstance(label_imagen.getWidth(), label_imagen.getHeight(), Image.SCALE_SMOOTH);
+                ImageIcon imagen = new ImageIcon(newImg);
+                label_fotoPerfil_perfil.setIcon(imagen);
+                label_fotoPerfil.setIcon(imagen);
             } else {
                 JOptionPane.showMessageDialog(null, "Datos erroneos o incompletos");
             }
@@ -1763,6 +1787,21 @@ public class VistaPrincipal extends javax.swing.JFrame {
         txt_idUsuarioSolicitud.setText("");
     }//GEN-LAST:event_bt_enviarSolicitudActionPerformed
 
+    private void bt_cambiarfotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_cambiarfotoActionPerformed
+        // TODO add your handling code here:
+        JFileChooser jf = new JFileChooser();
+        jf.addChoosableFileFilter(new FiltroImagenes());
+        jf.setAcceptAllFileFilterUsed(false);
+        jf.showOpenDialog(this);
+        File imagen = jf.getSelectedFile();
+        String path = imagen.getAbsolutePath();
+        ImageIcon MyImage = new ImageIcon(path);
+        Image img = MyImage.getImage();
+        Image newImg = img.getScaledInstance(label_fotoPerfil_perfil.getWidth(), label_fotoPerfil_perfil.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon image = new ImageIcon(newImg);
+        label_fotoPerfil_perfil.setIcon(image);
+    }//GEN-LAST:event_bt_cambiarfotoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1820,6 +1859,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton bt_actualizarDatos;
     private javax.swing.JButton bt_amigos;
     private javax.swing.JButton bt_buscarPerfilSolicitud;
+    private javax.swing.JButton bt_cambiarfoto;
     private javax.swing.JButton bt_chat;
     private javax.swing.JButton bt_crear;
     private javax.swing.JButton bt_crearPublicacion;
@@ -1853,7 +1893,6 @@ public class VistaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel label_amigos;
     private javax.swing.JLabel label_apellidos;
     private javax.swing.JLabel label_apellidos1;
-    private javax.swing.JLabel label_apellidosPerfil;
     private javax.swing.JLabel label_celular;
     private javax.swing.JLabel label_crearPublicacion;
     private javax.swing.JLabel label_departamento;
@@ -1861,7 +1900,8 @@ public class VistaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel label_enviarSolicitud;
     private javax.swing.JLabel label_enviarSolicitud1;
     private javax.swing.JLabel label_fechaNacimiento;
-    private javax.swing.JLabel label_hola;
+    private javax.swing.JLabel label_fotoPerfil;
+    private javax.swing.JLabel label_fotoPerfil_perfil;
     private javax.swing.JLabel label_imagen;
     private javax.swing.JLabel label_lista_amigos;
     private javax.swing.JLabel label_lista_amigos1;
@@ -1869,7 +1909,6 @@ public class VistaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel label_lista_amigos3;
     private javax.swing.JLabel label_nombres;
     private javax.swing.JLabel label_nombres1;
-    private javax.swing.JLabel label_nombresPerfil;
     private javax.swing.JLabel label_password;
     private javax.swing.JLabel label_sexo;
     private javax.swing.JLabel label_solicitudes;

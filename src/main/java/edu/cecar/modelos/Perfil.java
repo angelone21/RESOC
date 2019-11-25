@@ -16,7 +16,7 @@ import java.sql.Date;
  *
  * Copyrigth: CECAR
  */
-public class Perfil implements Serializable{
+public class Perfil implements Serializable {
 
     private int idUsuario;
     private String password;
@@ -27,7 +27,7 @@ public class Perfil implements Serializable{
     private String descripcion;
     private String departamento;
     private long celular;
-    
+    private byte[] fotoPerfil;
 
     public Perfil() {
     }
@@ -46,6 +46,14 @@ public class Perfil implements Serializable{
 
     public int getIdusario() {
         return idUsuario;
+    }
+
+    public byte[] getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(byte[] fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
 
     public void setIdusario(int idusario) {
@@ -115,9 +123,5 @@ public class Perfil implements Serializable{
     public void setCelular(long celular) {
         this.celular = celular;
     }
-
-    
-
-    
 
 }

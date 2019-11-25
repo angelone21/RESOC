@@ -10,6 +10,10 @@ import edu.cecar.modelos.Perfil;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 /**
@@ -436,6 +440,8 @@ public final class VistaLogPanel extends javax.swing.JFrame {
                 } else {
                     perfil.setDescripcion(null);
                 }
+                
+                perfil.setFotoPerfil(null);
                 if (controladorCliente.PeticionClientePerfil("registro", perfil) == true) {
                     JOptionPane.showMessageDialog(null, "Registro Completado!");
                     text_Usuario.setText("");
@@ -456,6 +462,7 @@ public final class VistaLogPanel extends javax.swing.JFrame {
                 }
 
             } catch (Exception ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "No hay conexion con la base de datos, intente nuevamente.");
             }
         } else {
