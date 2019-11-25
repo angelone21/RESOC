@@ -13,7 +13,9 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -440,8 +442,20 @@ public final class VistaLogPanel extends javax.swing.JFrame {
                 } else {
                     perfil.setDescripcion(null);
                 }
-                
-                perfil.setFotoPerfil(null);
+                String path = System.getProperty("user.dir");
+                byte[] bytes = null;
+                try {
+                    FileInputStream fis = new FileInputStream(new File(path+"\\Archivos\\fotoperfil.png"));
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    byte[] buf = new byte[1024];
+                    for (int i; (i = fis.read(buf)) != -1;) {
+                        bos.write(buf, 0, i);
+                    }
+                    bytes = bos.toByteArray();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                perfil.setFotoPerfil(bytes);
                 if (controladorCliente.PeticionClientePerfil("registro", perfil) == true) {
                     JOptionPane.showMessageDialog(null, "Registro Completado!");
                     text_Usuario.setText("");

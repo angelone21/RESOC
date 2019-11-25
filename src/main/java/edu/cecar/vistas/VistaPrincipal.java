@@ -1486,7 +1486,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
         solicitudes = controladorCliente.obtenerSolicitudes(perfilAutenticado.getIdusario());
         ArrayList<Perfil> listaAmigos = new ArrayList<Perfil>();
         solicitudes.stream().forEach((a) -> {
-            Perfil perfil = controladorCliente.obtenerPerfil(a.getIdUsuarioReceptor());
+            Perfil perfil = controladorCliente.obtenerPerfil(a.getIdUsuarioEmisor());
             listaAmigos.add(perfil);
         });
         DefaultTableModel modeloTablaSolicitudes = new DefaultTableModel() {
