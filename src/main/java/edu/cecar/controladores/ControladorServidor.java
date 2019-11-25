@@ -182,6 +182,20 @@ public final class ControladorServidor {
                     Object prueba = true;
                     serverSocket.getSalida().writeObject(prueba);
                 }
+                if (operacion.equals("eliminarPublicacion")) {
+                    Object object = serverSocket.getEntrada().readObject();
+                    Publicacion publicacion;
+                    publicacion = (Publicacion) object;
+                    try {
+                        controladorGestionarPublicacion.eliminarPublicacion(publicacion);
+                        Object prueba = true;
+                        serverSocket.getSalida().writeObject(prueba);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        Object prueba = false;
+                        serverSocket.getSalida().writeObject(prueba);
+                    }
+                }
             } catch (IOException e) {
 
                 System.out.println("Conexi�n cerrada de manera inesperada. " + e);

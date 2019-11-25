@@ -122,6 +122,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
         bt_nomegusta = new javax.swing.JButton();
         label_fotoPerfil_perfil = new javax.swing.JLabel();
         bt_cambiarfoto = new javax.swing.JButton();
+        bt_eliminarPublicacion = new javax.swing.JButton();
         panel_amigos = new javax.swing.JPanel();
         label_amigos = new javax.swing.JLabel();
         label_lista_amigos = new javax.swing.JLabel();
@@ -495,6 +496,15 @@ public class VistaPrincipal extends javax.swing.JFrame {
         });
         panel_perfil.add(bt_cambiarfoto);
         bt_cambiarfoto.setBounds(370, 60, 80, 40);
+
+        bt_eliminarPublicacion.setText("Eliminar");
+        bt_eliminarPublicacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_eliminarPublicacionActionPerformed(evt);
+            }
+        });
+        panel_perfil.add(bt_eliminarPublicacion);
+        bt_eliminarPublicacion.setBounds(930, 890, 130, 50);
 
         getContentPane().add(panel_perfil);
         panel_perfil.setBounds(190, 0, 1480, 1080);
@@ -1057,7 +1067,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
 
     private void bt_eliminarPerfilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_eliminarPerfilActionPerformed
         // TODO add your handling code here:
-
+        
     }//GEN-LAST:event_bt_eliminarPerfilActionPerformed
 
     private void bt_BloquearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_BloquearActionPerformed
@@ -1802,6 +1812,56 @@ public class VistaPrincipal extends javax.swing.JFrame {
         label_fotoPerfil_perfil.setIcon(image);
     }//GEN-LAST:event_bt_cambiarfotoActionPerformed
 
+    private void bt_eliminarPublicacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_eliminarPublicacionActionPerformed
+        // TODO add your handling code here:
+        ArrayList<Publicacion> p = new ArrayList<Publicacion>();
+        p = controladorCliente.obtenerPublicaciones(perfilAutenticado.getIdusario());
+        int row = tabla_publicaciones.getSelectedRow();
+        Publicacion publicacion = new Publicacion(p.get(row).getIdUsuario(), p.get(row).getTexto(), p.get(row).getMultimedia(), p.get(row).getFechapublicacion(), p.get(row).getTipopublicacion(), p.get(row).getMegusta(), p.get(row).getNomegusta());
+        publicacion.setIdPublicacion(p.get(row).getIdPublicacion());
+        if (controladorCliente.PeticionClientePublicacion("eliminarPublicacion", publicacion) == true) {
+            JOptionPane.showMessageDialog(null, "Publicacion eliminada correctamente!");
+            ArrayList<Publicacion> publicaciones = new ArrayList<Publicacion>();
+            publicaciones = controladorCliente.obtenerPublicaciones(perfilAutenticado.getIdusario());
+            DefaultTableModel modeloTablaPublicaciones = new DefaultTableModel() {
+                public boolean isCellEditable(int rowIndex, int mColIndex) {
+                    return false;
+                }
+            };
+            modeloTablaPublicaciones.addColumn("Texto");
+            modeloTablaPublicaciones.addColumn("Multimedia");
+            modeloTablaPublicaciones.addColumn("Fecha de Publicacion");
+            modeloTablaPublicaciones.addColumn("Tipo");
+            modeloTablaPublicaciones.addColumn("Me gusta");
+            modeloTablaPublicaciones.addColumn("No me gusta");
+            tabla_publicaciones.setModel(modeloTablaPublicaciones);
+            tabla_publicaciones.setRowHeight(120);
+            tabla_publicaciones.getColumnModel().getColumn(1).setPreferredWidth(150);
+            Object datosPublicacion[] = new Object[6];
+            for (int i = 0; i < publicaciones.size(); i++) {
+                try {
+                    datosPublicacion[0] = publicaciones.get(i).getTexto();
+                    Blob blob = new javax.sql.rowset.serial.SerialBlob(publicaciones.get(i).getMultimedia());
+                    ImageIcon icon = new ImageIcon(controladorImagen.descargarImagen(blob));
+                    Image image = icon.getImage();
+                    image.getScaledInstance(5, 5, Image.SCALE_DEFAULT);
+                    ImageIcon icono = new ImageIcon(image);
+                    tabla_publicaciones.getColumnModel().getColumn(1).setCellRenderer(new ControladorRenderizarCelda());
+                    datosPublicacion[1] = icono;
+                    datosPublicacion[2] = publicaciones.get(i).getFechapublicacion();
+                    datosPublicacion[3] = publicaciones.get(i).getTipopublicacion();
+                    datosPublicacion[4] = publicaciones.get(i).getMegusta();
+                    datosPublicacion[5] = publicaciones.get(i).getNomegusta();
+                    modeloTablaPublicaciones.addRow(datosPublicacion);
+                } catch (Exception ex) {
+                    Logger.getLogger(VistaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al eliminar la publicacion");
+        }
+    }//GEN-LAST:event_bt_eliminarPublicacionActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1864,6 +1924,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton bt_crear;
     private javax.swing.JButton bt_crearPublicacion;
     private javax.swing.JButton bt_eliminarPerfil;
+    private javax.swing.JButton bt_eliminarPublicacion;
     private javax.swing.JButton bt_enviarSolicitud;
     private javax.swing.JButton bt_guardarCambios;
     private javax.swing.JButton bt_megusta;

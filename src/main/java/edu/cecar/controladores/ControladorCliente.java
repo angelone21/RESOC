@@ -144,6 +144,18 @@ public final class ControladorCliente {
                 Logger.getLogger(ControladorCliente.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        if (operacion.equals("eliminarPublicacion")) {
+            try {
+                socketObjeto.getSalida().writeObject(operacion);
+                Object object;
+                socketObjeto.getSalida().writeObject(publicacion);
+                object = socketObjeto.getEntrada().readObject();
+                respuesta = (boolean) object;
+                return respuesta;
+            } catch (Exception ex) {
+                Logger.getLogger(ControladorCliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return respuesta;
     }
 

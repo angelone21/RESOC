@@ -40,11 +40,21 @@ public class ControladorGestionarPublicacion {
         preparedStatement.execute();
     }
 
-    public void eliminarPublicacion(Publicacion publicacion) {
-
+    public void eliminarPublicacion(Publicacion publicacion) throws SQLException {
+        PreparedStatement preparedStatement = SingletonConexionBD.getinstance().prepareStatement("call gestionarPublicacion(?,?,?,?,?,?,?,?,?)");
+        preparedStatement.setInt(1, publicacion.getIdPublicacion());
+        preparedStatement.setInt(2, publicacion.getIdUsuario());
+        preparedStatement.setString(3, publicacion.getTexto());
+        preparedStatement.setBytes(4, publicacion.getMultimedia());
+        preparedStatement.setDate(5, publicacion.getFechapublicacion());
+        preparedStatement.setString(6, publicacion.getTipopublicacion());
+        preparedStatement.setInt(7, publicacion.getMegusta());
+        preparedStatement.setInt(8, publicacion.getNomegusta());
+        preparedStatement.setString(9, "eliminar");
+        preparedStatement.execute();
     }
 
-    public ArrayList<Publicacion> consultarPublicacion(int idUsuario,String operacion) throws SQLException {
+    public ArrayList<Publicacion> consultarPublicacion(int idUsuario, String operacion) throws SQLException {
         ArrayList<Publicacion> publicaciones = new ArrayList<Publicacion>();
         PreparedStatement preparedStatement = SingletonConexionBD.getinstance().prepareStatement("call buscarPublicacion(?,?)");
         preparedStatement.setInt(1, idUsuario);
